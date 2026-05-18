@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Tv Tracker Sandbox",
+  "schemaVersion": 1,
+  "description": "Duplicate of the TV Renewals/Cancellations tracker — sandbox copy to transform into something new. NOT wired to the bi-weekly scheduled refresh task; edit freely without affecting the live tracker."
+}
+</script>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -49,13 +56,6 @@
     border: 1px solid var(--border-strong); border-radius: 6px;
     font-size: 13px; background: #fff; color: var(--text);
   }
-  .chip {
-    display: inline-block; padding: 5px 11px; font-size: 12px; border-radius: 999px;
-    border: 1px solid var(--border-strong); background: #fff; cursor: pointer;
-    user-select: none; color: var(--text);
-  }
-  .chip.active { background: var(--text); color: #fff; border-color: var(--text); }
-  .group-label { font-size: 11px; color: var(--muted); margin: 0 4px 0 8px; text-transform: uppercase; letter-spacing: .04em; }
   .stats { color: var(--muted); font-size: 12px; padding: 0 4px; margin-bottom: 8px; }
   .row {
     display: grid; grid-template-columns: 130px 1fr; gap: 12px;
@@ -114,21 +114,6 @@
   footer { margin-top: 28px; font-size: 11px; color: var(--muted); }
   footer a { color: var(--accent); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
-  .refreshed-banner {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
-    background: linear-gradient(135deg, #fff8e1, #fdf2d0);
-    border: 1px solid #e6c97a; border-radius: 8px;
-    padding: 10px 14px; margin: 10px 0 6px;
-    font-size: 13px; color: #5b4500;
-  }
-  .refreshed-banner .pulse {
-    width: 8px; height: 8px; border-radius: 50%; background: #c08a00;
-    box-shadow: 0 0 0 0 rgba(192,138,0,.7);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(192,138,0,.7);} 70%{box-shadow:0 0 0 8px rgba(192,138,0,0);} 100%{box-shadow:0 0 0 0 rgba(192,138,0,0);} }
-  .refreshed-banner b { color: #2a2000; }
-  .refreshed-banner .next-run { margin-left: auto; font-size: 12px; color: #6b5a00; }
   .net-tag.scripted { background: #efe6f7; color: #5e2f87; }
   .net-tag.unscripted { background: #fde7e0; color: #a3442a; }
   .row-actions { display: flex; gap: 6px; margin-top: 6px; align-items: center; flex-wrap: wrap; }
@@ -179,11 +164,32 @@
     letter-spacing: .04em; vertical-align: middle;
   }
   .toolbar .btn-export {
-    margin-left: auto; padding: 6px 12px; font-size: 12px; font-weight: 600;
+    padding: 6px 12px; font-size: 12px; font-weight: 600;
     border: 1px solid var(--border-strong); border-radius: 6px;
     background: #fff; color: var(--text); cursor: pointer;
   }
   .toolbar .btn-export:hover { background: var(--text); color: #fff; border-color: var(--text); }
+
+  /* Dropdown filter groups (replaces chip-based filters) */
+  .filter-group {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  .toolbar select {
+    padding: 6px 10px; font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border-strong); border-radius: 6px;
+    background: #fff; color: var(--text);
+    text-transform: none; letter-spacing: normal;
+    cursor: pointer; font-family: inherit;
+  }
+  .toolbar select:hover { border-color: var(--text); }
+  .toolbar select:focus { outline: none; border-color: var(--text); }
+  .toolbar input[type="date"] {
+    padding: 5px 8px; font-size: 12px;
+    border: 1px solid var(--border-strong); border-radius: 6px;
+    background: #fff; font-family: inherit;
+  }
 
   /* ===== Prototype additions ===== */
   .proto-banner {
@@ -230,21 +236,16 @@
   .sig { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 4px;
     background: #f5f3ed; border: 1px solid var(--border); }
   .sig .k { font-weight: 600; color: var(--text); }
-  /* Covered Under License pills */
   .sig.cov-Yes      { background: #e6efe9; border-color: #b7d4c2; color: #3a6650; }
   .sig.cov-Yes .k   { color: #2f7d4f; }
   .sig.cov-No       { background: #fbe9e7; border-color: #f0c5be; color: #a83019; }
   .sig.cov-No .k    { color: #a83019; }
   .sig.cov-Unknown  { background: #ececec; border-color: #d3cfc3; color: #555; }
-
-  /* Royalty Potential pills */
   .sig.pot-High     { background: #efe6f7; border-color: #c5b8e6; color: #5e2f87; }
   .sig.pot-High .k  { color: #5e2f87; }
   .sig.pot-Medium   { background: #e3eef9; border-color: #b7cce4; color: #1f5fa8; }
   .sig.pot-Medium .k{ color: #1f5fa8; }
   .sig.pot-Low      { background: #ececec; border-color: #d3cfc3; color: #555; }
-
-  /* Rerun Probability pills */
   .sig.prob-High    { background: #fde8e3; border-color: #f0b8a8; color: #a83019; }
   .sig.prob-High .k { color: #a83019; }
   .sig.prob-Medium  { background: #fff3d6; border-color: #e6c97a; color: #876200; }
@@ -252,7 +253,6 @@
   .sig.prob-Low     { background: #e6efe9; border-color: #b7d4c2; color: #3a6650; }
   .sig.prob-Low .k  { color: #3a6650; }
 
-  /* "Reach out" CTA on covered productions */
   .reach-cta {
     display: inline-flex; align-items: center; gap: 4px;
     margin-top: 6px; padding: 4px 10px; border-radius: 6px;
@@ -261,11 +261,9 @@
   }
   .reach-cta:hover { background: #245d3c; }
 
-  /* Adjust row grid to make room for priority badge in left column */
   .row.proto { grid-template-columns: 150px 1fr; }
   .row.proto .badge-stack { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
 
-  /* Tab nav shared with the two dashboards */
   .proto-tabs { display: flex; gap: 2px; margin-bottom: 14px;
     border-bottom: 1px solid var(--border); }
   .proto-tabs a {
@@ -275,14 +273,11 @@
   .proto-tabs a.active { color: var(--text); border-bottom-color: var(--accent); }
   .proto-tabs a:hover { color: var(--text); }
 
-  /* Indicate when a signal was sourced from a dashboard (vs heuristic) */
   .sig.from-db { box-shadow: inset 2px 0 0 0 #2f7d4f; }
 
-  /* Tab section show/hide */
   .tab-section { display: none; }
   .tab-section.active { display: block; }
 
-  /* Inlined dashboard styles (Channels + Agreements) */
   .data-table {
     width: 100%; background: var(--card); border: 1px solid var(--border);
     border-radius: 8px; border-collapse: separate; border-spacing: 0; overflow: hidden;
@@ -341,10 +336,10 @@
 
   <div class="proto-banner">
     <div class="title">⚙ Data sources</div>
-    <div>PRO tier and rerun signals come from the <b>Channels</b> dashboard. License coverage comes from the <b>Agreements</b> dashboard. Music style is still derived locally from title/genre heuristics until the music-usage feed is wired.</div>
+    <div>Royalty Potential and Rerun Probability come from the <b>Channels</b> dashboard. License coverage comes from the <b>Agreements</b> dashboard. Music style is still derived locally from title/genre heuristics until the music-usage feed is wired.</div>
     <div class="sources">
-      <a class="src-pill connected" href="channels-dashboard.html" title="Open the Channels dashboard to edit PRO tier, payout score, and rerun intensity per channel."><span class="dot"></span>Channels dashboard<span class="label">editable</span></a>
-      <a class="src-pill connected" href="agreements-dashboard.html" title="Open the Agreements dashboard to log broadcaster/network/prod-co license coverage."><span class="dot"></span>Agreements dashboard<span class="label">editable</span></a>
+      <a class="src-pill connected" data-tab-link="channels" title="Switch to the Channels dashboard tab."><span class="dot"></span>Channels dashboard<span class="label">editable</span></a>
+      <a class="src-pill connected" data-tab-link="agreements" title="Switch to the Agreements dashboard tab."><span class="dot"></span>Agreements dashboard<span class="label">editable</span></a>
       <span class="src-pill" data-src="musicusage" title="Music usage intelligence — what music styles/genres each show tends to use, especially shows we aren't currently placed on"><span class="dot"></span>Music Usage Intelligence<span class="label">mock</span></span>
     </div>
     <div class="stats" id="dbStatus" style="margin-top:8px; color:#2c1f5b; font-weight:500;"></div>
@@ -352,70 +347,101 @@
 
   <div class="toolbar">
     <input type="search" id="q" placeholder="Search show, network, studio…">
-    <span class="group-label">Priority</span>
-    <span class="chip active" data-filter="priority" data-value="all">All</span>
-    <span class="chip" data-filter="priority" data-value="high">High</span>
-    <span class="chip" data-filter="priority" data-value="med">Medium</span>
-    <span class="chip" data-filter="priority" data-value="low">Low</span>
-    <span class="group-label">Covered Under License</span>
-    <span class="chip active" data-filter="license" data-value="all">All</span>
-    <span class="chip" data-filter="license" data-value="Yes">Yes</span>
-    <span class="chip" data-filter="license" data-value="No">No</span>
-    <span class="chip" data-filter="license" data-value="Unknown">Unknown</span>
-    <span class="group-label">Royalty Potential</span>
-    <span class="chip active" data-filter="royalty" data-value="all">All</span>
-    <span class="chip" data-filter="royalty" data-value="High">High</span>
-    <span class="chip" data-filter="royalty" data-value="Medium">Medium</span>
-    <span class="chip" data-filter="royalty" data-value="Low">Low</span>
-    <span class="group-label">Rerun Probability</span>
-    <span class="chip active" data-filter="rerunProb" data-value="all">All</span>
-    <span class="chip" data-filter="rerunProb" data-value="High">High</span>
-    <span class="chip" data-filter="rerunProb" data-value="Medium">Medium</span>
-    <span class="chip" data-filter="rerunProb" data-value="Low">Low</span>
-    <span class="group-label">Sort</span>
-    <select id="sortBy" style="padding:5px 8px; font-size:12px; border:1px solid var(--border-strong); border-radius:6px; background:#fff;">
-      <option value="priority">Priority score (desc)</option>
-      <option value="status">Status (current default)</option>
-      <option value="title">Title (A–Z)</option>
-      <option value="dateAdded">Date added (newest)</option>
-    </select>
-    <span class="group-label">Status</span>
-    <span class="chip active" data-filter="status" data-value="all">All</span>
-    <span class="chip" data-filter="status" data-value="renew">Renewed</span>
-    <span class="chip" data-filter="status" data-value="cancel">Canceled</span>
-    <span class="chip" data-filter="status" data-value="pickup">Pickup Buzz</span>
-    <span class="chip" data-filter="status" data-value="wrapped">Just Wrapped</span>
-    <span class="chip" data-filter="status" data-value="inprod">In Production</span>
-    <span class="group-label">Type</span>
-    <span class="chip active" data-filter="type" data-value="all">All</span>
-    <span class="chip" data-filter="type" data-value="broadcast">Broadcast</span>
-    <span class="chip" data-filter="type" data-value="cable">Cable</span>
-    <span class="chip" data-filter="type" data-value="streaming">Streaming</span>
-    <span class="group-label">Genre</span>
-    <span class="chip active" data-filter="genre" data-value="all">All</span>
-    <span class="chip" data-filter="genre" data-value="scripted">Scripted</span>
-    <span class="chip" data-filter="genre" data-value="unscripted">Unscripted</span>
-    <span class="group-label">Source</span>
-    <span class="chip active" data-filter="source" data-value="all">All</span>
-    <span class="chip" data-filter="source" data-value="trade">Trade Press</span>
-    <span class="chip" data-filter="source" data-value="crew">Crew Listings</span>
-    <span class="group-label">Date Added</span>
-    <span class="chip active" data-filter="dateRange" data-value="all">All Dates</span>
-    <span class="chip" data-filter="dateRange" data-value="new">New (14d)</span>
-    <span class="chip" data-filter="dateRange" data-value="older">Older</span>
-    <span class="chip" data-filter="dateRange" data-value="byDate">By Run ▾</span>
-    <select id="dateSelect" style="display:none; padding:5px 8px; font-size:12px; border:1px solid var(--border-strong); border-radius:6px; background:#fff;"></select>
-    <span class="chip" data-filter="dateRange" data-value="range">Date Range ▾</span>
+    <label class="filter-group">Priority
+      <select data-filter="priority">
+        <option value="all">All</option>
+        <option value="high">High</option>
+        <option value="med">Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </label>
+    <label class="filter-group">Covered Under License
+      <select data-filter="license">
+        <option value="all">All</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+        <option value="Unknown">Unknown</option>
+      </select>
+    </label>
+    <label class="filter-group">Royalty Potential
+      <select data-filter="royalty">
+        <option value="all">All</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </label>
+    <label class="filter-group">Rerun Probability
+      <select data-filter="rerunProb">
+        <option value="all">All</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </label>
+    <label class="filter-group">Status
+      <select data-filter="status">
+        <option value="all">All</option>
+        <option value="renew">Renewed</option>
+        <option value="cancel">Canceled</option>
+        <option value="pickup">Pickup Buzz</option>
+        <option value="wrapped">Just Wrapped</option>
+        <option value="inprod">In Production</option>
+      </select>
+    </label>
+    <label class="filter-group">Type
+      <select data-filter="type">
+        <option value="all">All</option>
+        <option value="broadcast">Broadcast</option>
+        <option value="cable">Cable</option>
+        <option value="streaming">Streaming</option>
+      </select>
+    </label>
+    <label class="filter-group">Genre
+      <select data-filter="genre">
+        <option value="all">All</option>
+        <option value="scripted">Scripted</option>
+        <option value="unscripted">Unscripted</option>
+      </select>
+    </label>
+    <label class="filter-group">Source
+      <select data-filter="source">
+        <option value="all">All</option>
+        <option value="trade">Trade Press</option>
+        <option value="crew">Crew Listings</option>
+      </select>
+    </label>
+    <label class="filter-group">Date Added
+      <select data-filter="dateRange">
+        <option value="all">All Dates</option>
+        <option value="new">New (latest refresh)</option>
+        <option value="older">Older</option>
+        <option value="byDate">By Run</option>
+        <option value="range">Custom Range</option>
+      </select>
+    </label>
+    <select id="dateSelect" style="display:none;"></select>
     <span id="rangePicker" style="display:none; align-items:center; gap:6px; font-size:12px; color:var(--muted);">
-      <input type="date" id="dateFrom" style="padding:4px 6px; font-size:12px; border:1px solid var(--border-strong); border-radius:6px; background:#fff;">
+      <input type="date" id="dateFrom">
       <span>to</span>
-      <input type="date" id="dateTo" style="padding:4px 6px; font-size:12px; border:1px solid var(--border-strong); border-radius:6px; background:#fff;">
+      <input type="date" id="dateTo">
       <button id="rangeClear" class="btn" style="padding:4px 10px; font-size:11px;">Clear</button>
     </span>
-    <span class="group-label">View</span>
-    <span class="chip active" data-filter="view" data-value="all">All Items</span>
-    <span class="chip" data-filter="view" data-value="favs">★ Favorites</span>
-    <span class="chip" data-filter="view" data-value="archived">Archived</span>
+    <label class="filter-group">View
+      <select data-filter="view">
+        <option value="all">All Items</option>
+        <option value="favs">★ Favorites</option>
+        <option value="archived">Archived</option>
+      </select>
+    </label>
+    <label class="filter-group">Sort
+      <select id="sortBy">
+        <option value="priority">Priority score (desc)</option>
+        <option value="status">Status (default)</option>
+        <option value="title">Title (A–Z)</option>
+        <option value="dateAdded">Date added (newest)</option>
+      </select>
+    </label>
     <button class="btn-export" id="addShow" style="margin-left:auto; background:var(--text); color:#fff; border-color:var(--text);">+ Add show</button>
     <button class="btn-export" id="exportCsv">⤓ Export CSV</button>
   </div>
@@ -501,7 +527,6 @@
 
 <script>
 const items = [
-// ===== TRADE PRESS — RENEWALS =====
 { source:"trade", title:"Harry Potter", genre:"scripted", network:"HBO / Max", type:"streaming", studio:"Brontë Film and TV; Warner Bros. Television; Heyday Films", status:"renew", statusLabel:"Renewed S2", detail:"Renewed for Season 2 (Chamber of Secrets). Jon Brown (Succession) elevated to co-showrunner with Francesca Gardiner.", prod:"Pre-production — S2 begins filming Fall 2026, ahead of Season 1's Christmas 2026 premiere.", sources:[["Deadline","https://deadline.com/2026/05/harry-potter-renewed-season-2-hbo-jon-brown-co-showrunner-1236883218/"]], dateAdded:"2026-05-06" },
 { source:"trade", title:"The Fall and Rise of Reggie Dinkins", genre:"scripted", network:"NBC", type:"broadcast", studio:"Universal Television; Little Stranger; 3 Arts; Bevel Gears; Means Ends; Streetlife", status:"renew", statusLabel:"Renewed S2", detail:"Tracy Morgan & Daniel Radcliffe sports mockumentary picked up for a 10-ep S2 after a 14M+ debut.", prod:"Pre-production.", sources:[["Deadline","https://deadline.com/2026/05/the-fall-and-rise-of-reggie-dinkins-renewed-season-2-nbc-1236882229/"]], dateAdded:"2026-05-06" },
 { source:"trade", title:"Adults", genre:"scripted", network:"FX", type:"cable", studio:"FX Productions", status:"renew", statusLabel:"Renewed S2", detail:"FX comedy renewed for a second season.", prod:"Pre-production.", sources:[], dateAdded:"2026-05-06" },
@@ -512,7 +537,6 @@ const items = [
 { source:"trade", title:"Married to Medicine", genre:"unscripted", network:"Bravo", type:"cable", studio:"Purveyors of Pop / Fremantle", status:"renew", statusLabel:"Renewed S11", detail:"Atlanta-set medical reality franchise renewed for Season 11.", prod:"Pre-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"trade", title:"The Real Housewives (NJ, NYC, OC, Potomac, SLC)", genre:"unscripted", network:"Bravo", type:"cable", studio:"Sirens Media; Shed Media; Purveyors of Pop", status:"renew", statusLabel:"Renewed", detail:"Five Real Housewives flagships renewed; Miami remains paused but not officially canceled.", prod:"Mixed — NJ and OC currently in production.", sources:[], dateAdded:"2026-05-06" },
 { source:"trade", title:"Canada Shore", genre:"unscripted", network:"MTV", type:"cable", studio:"495 Productions", status:"renew", statusLabel:"Renewed S2", detail:"Jersey Shore franchise extension picked up for a second season.", prod:"Pre-production.", sources:[], dateAdded:"2026-05-06" },
-// ===== TRADE PRESS — CANCELLATIONS / ENDINGS =====
 { source:"trade", title:"Brilliant Minds", genre:"scripted", network:"NBC", type:"broadcast", studio:"Warner Bros. Television; Universal Television", status:"cancel", statusLabel:"Canceled", detail:"Zachary Quinto medical drama canceled after 2 seasons. Final episodes air starting May 27.", prod:"Wrapped — remaining S2 in burn-off.", sources:[["Deadline","https://deadline.com/2026/05/brilliant-minds-stumble-canceled-nbc-1236878613/"]], dateAdded:"2026-05-06" },
 { source:"trade", title:"Stumble", genre:"scripted", network:"NBC", type:"broadcast", studio:"Universal Television", status:"cancel", statusLabel:"Canceled", detail:"Jenn Lyon-led cheerleading mockumentary from Jeff & Liz Astrof canceled after S1 despite strong reviews.", prod:"Wrapped.", sources:[["Deadline","https://deadline.com/2026/05/brilliant-minds-stumble-canceled-nbc-1236878613/"]], dateAdded:"2026-05-06" },
 { source:"trade", title:"Going Dutch", genre:"scripted", network:"Fox", type:"broadcast", studio:"Fox Entertainment Studios; Amoeba (Denis & Jack Leary)", status:"cancel", statusLabel:"Canceled", detail:"Denis Leary military comedy canceled after 2 seasons; finale aired April 23.", prod:"Wrapped.", sources:[["Deadline","https://deadline.com/2026/05/going-dutch-canceled-fox-denis-leary-1236880168/"]], dateAdded:"2026-05-06" },
@@ -526,7 +550,6 @@ const items = [
 { source:"trade", title:"Jersey Shore: Family Vacation", genre:"unscripted", network:"MTV", type:"cable", studio:"495 Productions (SallyAnn Salsano)", status:"cancel", statusLabel:"Ending S9", detail:"Final 18 episodes premiere May 7 at 8pm ET. Closes out the franchise after 9 seasons.", prod:"Post-production — final season fully shot; episodes airing weekly.", sources:[["Variety","https://variety.com/2026/tv/news/jersey-shore-family-vacation-ending-season-9-mtv-1236679482/"]], dateAdded:"2026-05-06" },
 { source:"trade", title:"Sunset P.I.", genre:"scripted", network:"NBC (pilot)", type:"broadcast", studio:"Universal Television; 3 Arts (Dan Goor / Luke Del Tredici)", status:"pickup", statusLabel:"Pilot Buzz", detail:"Single-cam comedy starring Jake Johnson is an early NBC frontrunner heading into upfronts.", prod:"Pilot shot; awaiting pickup decision.", sources:[["Deadline","https://deadline.com/2026/05/nbc-pilot-buzz-dan-goor-rockford-files-1236878821/"]], dateAdded:"2026-05-06" },
 { source:"trade", title:"The Rockford Files (reboot)", genre:"scripted", network:"NBC (pilot)", type:"broadcast", studio:"Universal Television", status:"pickup", statusLabel:"Pilot Buzz", detail:"David Boreanaz-led reboot of the classic detective series; strong NBC contender.", prod:"Pilot shot; awaiting pickup decision.", sources:[["Deadline","https://deadline.com/2026/05/nbc-pilot-buzz-dan-goor-rockford-files-1236878821/"]], dateAdded:"2026-05-06" },
-// ===== STAFF ME UP — JUST WRAPPED IN APRIL 2026 =====
 { source:"crew", title:"90 Day Fiancé (Season 10)", genre:"unscripted", network:"TLC", type:"cable", studio:"Sharp Entertainment", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Crew listings show segment producers wrapping 3/26–4/26.", prod:"Wrapped — likely heading to post for late-2026 airing.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"The Real Housewives of Atlanta (Season 17)", genre:"unscripted", network:"Bravo", type:"cable", studio:"True Entertainment / NBCUniversal", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Editor credits run 9/25–4/26. Production wrap signals post is underway for Bravo airing.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Project Runway (Season 22)", genre:"unscripted", network:"Disney/Freeform", type:"cable", studio:"Bunim/Murray Productions", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Crew dates 3/26–4/26 indicate season finished principal.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
@@ -541,7 +564,6 @@ const items = [
 { source:"crew", title:"Honest Renovations (Season 4)", genre:"unscripted", network:"HGTV / Roku", type:"cable", studio:"Wheelhouse / Roku Originals", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Art Department credits 2/26–4/26 — Jessica Alba & Lizzy Mathis reno series.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Designed To Last", genre:"unscripted", network:"Cable / streaming TBC", type:"cable", studio:"3Ball Productions", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Post Production Supervisor credits 11/25–4/26 (4 episodes).", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Naked and Afraid: Shipwrecked (Season 1)", genre:"unscripted", network:"Discovery", type:"cable", studio:"Lionsgate Alternative TV", status:"wrapped", statusLabel:"Wrapped May '26", detail:"Tony Sam's Post Producer credit runs 3/26–5/26 on this Naked and Afraid offshoot.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
-// ===== STAFF ME UP — JUST WRAPPED IN APR/MAY 2026 (cont.) =====
 { source:"crew", title:"Naked and Afraid (Season 19)", genre:"unscripted", network:"Discovery", type:"cable", studio:"Lionsgate Alternative TV", status:"wrapped", statusLabel:"Wrapped Mar '26", detail:"Clearance Manager credit shows wrap 4/25–3/26 for the flagship season.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Backyard Escapes", genre:"unscripted", network:"Cable / streaming TBC", type:"cable", studio:"RTR Media", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Associate Producer credits 3/26–4/26.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Baylen Out Loud", genre:"unscripted", network:"TLC", type:"cable", studio:"Magilla Entertainment", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Audio Supervisor credit runs 2/24–4/26 — long-running TLC docusoap finished.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
@@ -552,12 +574,10 @@ const items = [
 { source:"crew", title:"Cupertino (Season 1)", genre:"unscripted", network:"TBC", type:"streaming", studio:"Production company TBC", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Additional PA credit dated 4/26 on this otherwise unannounced project.", prod:"In post — could be a stealth dev project.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Pardon Me", genre:"unscripted", network:"TBC", type:"cable", studio:"Far From Inc.", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Development Producer credit 9/24–4/26.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Help! I'm in a Secret Relationship (Season 4)", genre:"unscripted", network:"MTV", type:"cable", studio:"Sharp Entertainment / Antoinette Media", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"Implied by Antoinette Media credit 4/25–4/26 alongside known prior seasons on Sharp.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
-// ===== STAFF ME UP — WRAPPED IN MAY 2026 =====
 { source:"crew", title:"Totally 90s House (Season 1)", genre:"unscripted", network:"Network TBC", type:"cable", studio:"Big Table Media", status:"wrapped", statusLabel:"Wrapped May '26", detail:"Associate Talent Producer credits 4/26–5/26 — '90s-themed reality shoot finished.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"The Charts (Season 1)", genre:"unscripted", network:"Network TBC", type:"streaming", studio:"Anomaly Entertainment", status:"wrapped", statusLabel:"Wrapped May '26", detail:"Consulting Producer credit 3/26–5/26.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Fear Factor (revival)", genre:"unscripted", network:"Likely Fox / streaming", type:"broadcast", studio:"NEXT Entertainment", status:"wrapped", statusLabel:"Wrapped May '26", detail:"Editor (Avid) credit 1/26–5/26 at NEXT Entertainment.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"1000lb Roomies", genre:"unscripted", network:"TLC (likely)", type:"cable", studio:"Renegade 83", status:"wrapped", statusLabel:"Wrapped May '26", detail:"Talent Assistant credit 3/26–5/26 — spinoff of TLC's 1000-lb. franchise.", prod:"In post-production.", sources:[], dateAdded:"2026-05-06" },
-// ===== STAFF ME UP — JUST STARTED (4/26 - Current) =====
 { source:"crew", title:"Untitled Wheelhouse / Spoke Studios Series (Season 1)", genre:"unscripted", network:"TBC", type:"streaming", studio:"Wheelhouse Entertainment / Spoke Studios", status:"inprod", statusLabel:"In Production", detail:"Samantha Hartzband (Million Dollar Listing LA, Owning Manhattan) attached as EP/Showrunner. Started 4/26.", prod:"In production — currently shooting.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Love Thy Nader (Season 2)", genre:"unscripted", network:"Network TBC", type:"cable", studio:"32 Flavors", status:"inprod", statusLabel:"In Production", detail:"Associate Producer credit dated 4/26 - Current. Season 2 of the docusoap.", prod:"In production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Catfish Murders", genre:"unscripted", network:"Network TBC", type:"cable", studio:"Asylum Entertainment", status:"inprod", statusLabel:"In Production", detail:"Associate Producer credit dated 4/26 - Current at Asylum.", prod:"In production.", sources:[], dateAdded:"2026-05-06" },
@@ -570,9 +590,6 @@ const items = [
 { source:"crew", title:"Untitled Blue Orbit / Casting Series", genre:"unscripted", network:"TBC", type:"cable", studio:"Blue Orbit Productions", status:"inprod", statusLabel:"In Production", detail:"Segment Producer credit 4/26 - Current — separate from Beat Shazam wrap at same studio.", prod:"In production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Untitled CBS Media Ventures Series", genre:"unscripted", network:"CBS / Syndication", type:"broadcast", studio:"CBS Media Ventures", status:"inprod", statusLabel:"In Production", detail:"Clearance Manager credit 4/26 - Current.", prod:"In production.", sources:[], dateAdded:"2026-05-06" },
 { source:"crew", title:"Untitled ITV Studios America Series", genre:"unscripted", network:"TBC", type:"cable", studio:"ITV Studios America", status:"inprod", statusLabel:"In Production", detail:"Casting Producer credit 5/26 - Current.", prod:"In production.", sources:[], dateAdded:"2026-05-06" },
-
-// ===== 2026-05-07 REFRESH — TRADE PRESS / FUTON CRITIC =====
-// RENEWALS
 { source:"trade", title:"Murder in a Small Town", genre:"scripted", network:"FOX", type:"broadcast", studio:"Fox Entertainment Studios; Universal Television", status:"renew", statusLabel:"Renewed S3", detail:"Pacific Northwest mystery picked up for Season 3. Peter Gallagher joins as Rod Finlayson.", prod:"Pre-production.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/07/fox-television-network-renews-murder-in-a-small-town-for-season-three/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"The Lowdown", genre:"scripted", network:"FX", type:"cable", studio:"FX Productions", status:"renew", statusLabel:"Renewed S2", detail:"Sterlin Harjo's Tulsa-set drama (Ethan Hawke) renewed for a second season at FX.", prod:"Pre-production.", sources:[["Rotten Tomatoes","https://editorial.rottentomatoes.com/article/renewed-and-cancelled-tv-shows-2026/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Below Deck Down Under", genre:"unscripted", network:"Bravo", type:"cable", studio:"51 Minds Entertainment", status:"renew", statusLabel:"Renewed S3", detail:"Australian-set yachting franchise picked up for Season 3.", prod:"Pre-production.", sources:[["Rotten Tomatoes","https://editorial.rottentomatoes.com/article/renewed-and-cancelled-tv-shows-2026/"]], dateAdded:"2026-05-07" },
@@ -584,69 +601,36 @@ const items = [
 { source:"trade", title:"7 Little Johnstons", genre:"unscripted", network:"TLC", type:"cable", studio:"Figure 8 Films", status:"renew", statusLabel:"Renewed S15", detail:"Long-running TLC family docusoap renewed for Season 15.", prod:"Pre-production.", sources:[["Rotten Tomatoes","https://editorial.rottentomatoes.com/article/renewed-and-cancelled-tv-shows-2026/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"90 Day Fiancé: Love in Paradise", genre:"unscripted", network:"TLC", type:"cable", studio:"Sharp Entertainment", status:"renew", statusLabel:"Renewed S4", detail:"International couples spinoff renewed for Season 4.", prod:"Pre-production.", sources:[["Rotten Tomatoes","https://editorial.rottentomatoes.com/article/renewed-and-cancelled-tv-shows-2026/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"90 Day: The Single Life", genre:"unscripted", network:"TLC", type:"cable", studio:"Sharp Entertainment", status:"renew", statusLabel:"Renewed S4", detail:"Singles-focused 90 Day spinoff picked up for Season 4 on TLC.", prod:"Pre-production.", sources:[["Rotten Tomatoes","https://editorial.rottentomatoes.com/article/renewed-and-cancelled-tv-shows-2026/"]], dateAdded:"2026-05-07" },
-
-// CANCELLATIONS / ENDINGS
 { source:"trade", title:"Talamasca: The Secret Order", genre:"scripted", network:"AMC / AMC+", type:"cable", studio:"AMC Studios", status:"cancel", statusLabel:"Canceled", detail:"Anne Rice Immortal Universe spinoff (Talamasca/Raglan thriller) canceled after one season on AMC.", prod:"Wrapped.", sources:[["TV Guide","https://www.tvguide.com/news/canceled-renewed-tv-shows-may-2026/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"The Bear", genre:"scripted", network:"FX / Hulu", type:"streaming", studio:"FX Productions", status:"cancel", statusLabel:"Final Season", detail:"Final season premieres June 25, 2026 — all 8 episodes drop at debut on FX and Hulu.", prod:"Post-production — final season locked.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/06/final-season-of-fxs-the-bear-premieres-june-25-on-fx-and-hulu/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"The Chi", genre:"scripted", network:"Paramount+ / Showtime", type:"streaming", studio:"20th Television; Hillman Grad", status:"cancel", statusLabel:"Final Season", detail:"Lena Waithe's Chicago-set drama wraps with 10-ep landmark final season starting May 22.", prod:"Post-production.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/07/the-chi-says-goodbye-trailer-and-key-art-unveiled-for-landmark-final-season/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Survival of the Thickest", genre:"scripted", network:"Netflix", type:"streaming", studio:"Netflix; Universal Television", status:"cancel", statusLabel:"Final Season", detail:"Michelle Buteau comedy ends with final season premiering July 2 on Netflix.", prod:"Post-production — final season locked.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/07/survival-of-the-thickest-the-final-season-official-teaser-netflix/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Love & Hip Hop (franchise)", genre:"unscripted", network:"VH1", type:"cable", studio:"Antoinette Media (Mona Scott-Young); Eastern TV", status:"cancel", statusLabel:"Franchise Ending", detail:"VH1 announces 'Love & Hip Hop: The Final Chapter' for Fall 2026 — closes out the entire franchise.", prod:"In production / wrapping.", sources:[["TV Series Finale","https://tvseriesfinale.com/tv-show/love-hip-hop-vh1-announces-final-chapter-of-reality-series-franchise-for-fall-2026/"]], dateAdded:"2026-05-07" },
-
-// PICKUPS / SERIES ORDERS
 { source:"trade", title:"Nation's Dumbest", genre:"unscripted", network:"FOX", type:"broadcast", studio:"Fox Alternative Entertainment", status:"pickup", statusLabel:"Series Order", detail:"New celebrity game show hosted by Jack Whitehall — contestants relive school-life chaos. FOX greenlit 5/7/26.", prod:"Pre-production.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/07/class-is-in-session-fox-announces-new-celebrity-game-show-nations-dumbest/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Cocktail Wars", genre:"unscripted", network:"E!", type:"cable", studio:"E! Entertainment / NBCU", status:"pickup", statusLabel:"Series Order", detail:"Lance Bass and Joey Fatone host a mixology competition with $10K-per-episode prize. E! greenlit 5/7/26.", prod:"Pre-production.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/07/e-greenlights-cocktail-wars-hosted-by-lance-bass-and-joey-fatone/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Crashers (HGTV)", genre:"unscripted", network:"HGTV", type:"cable", studio:"HGTV / Discovery", status:"pickup", statusLabel:"Series Order", detail:"13-episode reno series with Jonathan Knight (NKOTB) ambushing folks at hardware stores for fast renos.", prod:"Pre-production.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/06/hgtv-reboots-popular-72-hour-renovation-series-with-crashers/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Highway to Heaven (reboot)", genre:"scripted", network:"FOX", type:"broadcast", studio:"Fox Entertainment Studios", status:"pickup", statusLabel:"Series Order", detail:"FOX revives the Michael Landon classic for the 2027-28 season.", prod:"Development.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/06/fox-hits-the-road-with-return-of-beloved-global-sensation-highway-to-heaven/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Disavowed", genre:"scripted", network:"Apple TV+", type:"streaming", studio:"Apple Studios", status:"pickup", statusLabel:"Series Order", detail:"James Marsden stars and EPs as fired CIA Case Officer Brad Griffin chasing the assassin who killed his colleague.", prod:"Pre-production.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/06/apple-tv-lands-disavowed-new-action-thriller-starring-and-executive-produced-by-james-marsden/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Untitled Vegas Series (Scorsese)", genre:"scripted", network:"Netflix", type:"streaming", studio:"Netflix; Brian Koppelman & David Levien", status:"pickup", statusLabel:"Series Order", detail:"Oscar Isaac headlines Martin Scorsese's Las Vegas drama from the Billions team (Koppelman/Levien).", prod:"Pre-production.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/06/oscar-isaac-is-hitting-the-casino-in-martin-scorseses-new-vegas-series/"]], dateAdded:"2026-05-07" },
-
-// DEVELOPMENT (Futon Critic dev update — Wk Apr 27-May 1)
 { source:"trade", title:"American Blue", genre:"scripted", network:"HBO Max", type:"streaming", studio:"HBO Max Originals", status:"pickup", statusLabel:"Pilot", detail:"Milo Ventimiglia drama pilot adds Wrenn Schmidt and Ellyn Jameson; Ventimiglia plays cop 'Milk' Gillespie.", prod:"Pilot in development.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/01/development-update-week-of-april-27-may-1-587314/14820/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Godspeed", genre:"scripted", network:"Amazon Prime Video", type:"streaming", studio:"Wandering Rocks; United Artists; Sugar23; NASCAR Studios", status:"pickup", statusLabel:"In Development", detail:"Joe Pokaski one-hour NASCAR family drama — writers' room underway at Amazon.", prod:"Writers' room.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/01/development-update-week-of-april-27-may-1-587314/14820/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Untitled Gilgo Beach Murders Project", genre:"scripted", network:"Peacock", type:"streaming", studio:"UCP; G-Unit Film & Television", status:"pickup", statusLabel:"In Development", detail:"Jordan Hawley scripted take on the Long Island serial killer case; 50 Cent EPs.", prod:"Development.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/01/development-update-week-of-april-27-may-1-587314/14820/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"Bastards", genre:"scripted", network:"Hulu", type:"streaming", studio:"20th Television", status:"pickup", statusLabel:"In Development", detail:"Meaghan Oppenheimer family drama about three adult children of a scandal-engulfed artist.", prod:"Development.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/01/development-update-week-of-april-27-may-1-587314/14820/"]], dateAdded:"2026-05-07" },
 { source:"trade", title:"The Second Lady", genre:"scripted", network:"Amazon Prime Video", type:"streaming", studio:"Outerbanks Entertainment; Universal Television", status:"pickup", statusLabel:"In Development", detail:"Jessica Sharzer adapting Irving Wallace novel about a kidnapped First Lady; Kevin Williamson EPs.", prod:"Development.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/01/development-update-week-of-april-27-may-1-587314/14820/"]], dateAdded:"2026-05-07" },
-
-// IN PRODUCTION
 { source:"trade", title:"The Forsytes (Season 3)", genre:"scripted", network:"PBS Masterpiece", type:"broadcast", studio:"Mammoth Screen / ITV Studios", status:"inprod", statusLabel:"In Production", detail:"Season 3 starts filming with Gregg Sulkin and Gabriel Antunes joining the cast.", prod:"In production.", sources:[["Futon Critic","http://www.thefutoncritic.com/news/2026/05/07/the-forsytes-season-3-starts-production-and-announces-new-cast/"]], dateAdded:"2026-05-07" },
-
-// STAFF ME UP — JUST WRAPPED / IN PROD
 { source:"crew", title:"If These Walls Could Rock", genre:"unscripted", network:"Cable / streaming TBC", type:"cable", studio:"Bungalow Media + Entertainment", status:"wrapped", statusLabel:"Wrapped May '26", detail:"Post Production Supervisor credit dated 5/24–5/26 — long-running Bungalow shoot wrapped this month.", prod:"In post-production.", sources:[], dateAdded:"2026-05-07" },
 { source:"crew", title:"Fairwood (Season 2)", genre:"scripted", network:"TBC", type:"streaming", studio:"Production company TBC", status:"wrapped", statusLabel:"Wrapped Apr '26", detail:"65-day Season 2 shoot wrapped per Senior Producer credit (Michael Caradonna).", prod:"In post-production.", sources:[], dateAdded:"2026-05-07" },
 { source:"crew", title:"Untitled Game Show Network Series", genre:"unscripted", network:"Game Show Network", type:"cable", studio:"Game Show Network", status:"inprod", statusLabel:"In Production", detail:"Production Manager credit dated 4/26 - Current at GSN (James Stacey).", prod:"In production.", sources:[], dateAdded:"2026-05-07" }
-
-// END
-
 ];
 
 const order = { renew: 0, pickup: 1, cancel: 2, inprod: 3, wrapped: 4 };
 
-// ============================================================================
-// PROTOTYPE: Backend signal mocking
-//
-// Each function below derives a mock value from the existing item shape using
-// rule-of-thumb heuristics. When the real backend lands, swap each function
-// for an MCP call to the corresponding data source (Sisense, License DB,
-// Music Usage Intelligence) and the rest of the UI keeps working.
-// ============================================================================
-
-// ---- Dashboard lookups (Channels & Agreements come from localStorage) -----
-// When the Channels or Agreements dashboards have data, we prefer them over
-// the regex heuristics. This is what wires the two dashboards back into the
-// Slate priority score.
-function _channelsDB() {
-  try { return JSON.parse(localStorage.getItem("slate-channels-v1") || "[]"); }
-  catch(e) { return []; }
-}
-function _agreementsDB() {
-  try { return JSON.parse(localStorage.getItem("slate-agreements-v1") || "[]"); }
-  catch(e) { return []; }
-}
+function _channelsDB() { try { return JSON.parse(localStorage.getItem("slate-channels-v1") || "[]"); } catch(e) { return []; } }
+function _agreementsDB() { try { return JSON.parse(localStorage.getItem("slate-agreements-v1") || "[]"); } catch(e) { return []; } }
 function lookupChannel(networkStr) {
   const net = (networkStr || "").toLowerCase();
   if (!net) return null;
   const db = _channelsDB();
-  // Prefer the longest matching channel name (so "AMC / AMC+" beats "AMC" alone)
   let best = null;
   for (const c of db) {
     const cn = (c.name || "").toLowerCase();
@@ -661,8 +645,6 @@ function lookupAgreement(studioStr) {
   const s = (studioStr || "").toLowerCase();
   if (!s) return null;
   const db = _agreementsDB();
-  // Pick the best-coverage match; semicolon-separated studios mean we check
-  // every chunk. Yes beats No.
   const scopeRank = { Yes: 2, No: 1 };
   let best = null;
   for (const a of db) {
@@ -677,18 +659,12 @@ function lookupAgreement(studioStr) {
   return best;
 }
 
-// ---- 1) Royalty Potential (Sisense channel payout heatmap) ----------------
-// First check the Channels dashboard; fall back to a network-name regex.
 const ROYALTY_HIGH = /\b(HBO|Max|Netflix|NBC|CBS|ABC|FOX|Hulu|Apple TV\+|Disney\+|Amazon|Prime Video|Peacock|Paramount\+)\b/i;
 const ROYALTY_MED  = /\b(FX|AMC|Bravo|MTV|TLC|HGTV|History|Discovery|Travel Channel|VH1|Freeform|Comedy Central|E!|Starz|Showtime|Tubi|BritBox|Hallmark)\b/i;
 function computeRoyaltyPotential(it) {
   const ch = lookupChannel(it.network);
   if (ch && ch.royaltyPotential) { it._royaltySource = "db"; return ch.royaltyPotential; }
-  // Legacy fallback in case the channel record still has the old proTier shape
-  if (ch && ch.proTier) {
-    it._royaltySource = "db";
-    return ch.proTier === "A" ? "High" : ch.proTier === "B" ? "Medium" : "Low";
-  }
+  if (ch && ch.proTier) { it._royaltySource = "db"; return ch.proTier === "A" ? "High" : ch.proTier === "B" ? "Medium" : "Low"; }
   it._royaltySource = "heuristic";
   const net = (it.network || "");
   if (ROYALTY_HIGH.test(net)) return "High";
@@ -696,18 +672,12 @@ function computeRoyaltyPotential(it) {
   return "Low";
 }
 
-// ---- 2) Rerun intensity (Sisense rerun heatmap) ---------------------------
-// Rerun-heavy networks (cable reality, procedurals) generate more backend.
-// Streaming originals typically don't pay reruns the same way.
 const RERUN_HEAVY_TITLES = /\b(Pawn Stars|House Hunters|Real Housewives|Below Deck|Naked and Afraid|90 Day|NCIS|Law & Order|Criminal Minds|Ghosts|Beat Shazam|Fear Factor|Jersey Shore|Married to Medicine|Project Runway|Love & Hip|Family Vacation|Watson|DMV|Brilliant Minds)\b/i;
 const RERUN_HEAVY_NETS = /\b(History|HGTV|Bravo|MTV|TLC|Discovery|Travel Channel|VH1|A&E|Syndication|Hallmark|Freeform)\b/i;
 function computeRerunProbability(it) {
   const ch = lookupChannel(it.network);
   if (ch && ch.rerunProbability) { it._rerunSource = "db"; return ch.rerunProbability; }
-  if (ch && ch.rerunIndex) {
-    it._rerunSource = "db";
-    return ch.rerunIndex === "high" ? "High" : ch.rerunIndex === "med" ? "Medium" : "Low";
-  }
+  if (ch && ch.rerunIndex) { it._rerunSource = "db"; return ch.rerunIndex === "high" ? "High" : ch.rerunIndex === "med" ? "Medium" : "Low"; }
   it._rerunSource = "heuristic";
   if (RERUN_HEAVY_TITLES.test(it.title || "")) return "High";
   if (RERUN_HEAVY_NETS.test(it.network || "")) return "High";
@@ -715,30 +685,18 @@ function computeRerunProbability(it) {
   return "Low";
 }
 
-// ---- 3) License coverage (broadcaster license DB) -------------------------
-// Productions made by — or with studios under — our annual broadcaster
-// agreements are flagged 'covered'. Third-party prod cos that we know are
-// included in those master agreements get 'partial'.
 const STUDIOS_COVERED = /\b(Warner Bros|Universal Television|Universal International|CBS Studios|20th Television|FX Productions|AMC Studios|Disney|Fox Entertainment Studios|Sony Pictures Television|HBO|Apple Studios|UCP|ITV America|ITV Studios|NBCUniversal)\b/i;
 const STUDIOS_PARTIAL = /\b(Sharp Entertainment|Magilla Entertainment|51 Minds|Bunim\/Murray|Lionsgate|Pie Town|3 Arts|Hillman Grad|Anomaly|Wheelhouse|Spoke Studios|Truly Original|Renegade 83|Asylum Entertainment|Boat Rocker|Mark Burnett|MGM Alternative|Mammoth Screen)\b/i;
 function computeCovered(it) {
   const ag = lookupAgreement(it.studio);
-  if (ag && ag.scope) {
-    it._licenseSource = "db";
-    it._licenseEntity = ag.entity;
-    return ag.scope; // already "Yes" or "No"
-  }
-  it._licenseSource = "heuristic";
-  it._licenseEntity = null;
+  if (ag && ag.scope) { it._licenseSource = "db"; it._licenseEntity = ag.entity; return ag.scope; }
+  it._licenseSource = "heuristic"; it._licenseEntity = null;
   const studio = (it.studio || "");
   if (STUDIOS_COVERED.test(studio) || STUDIOS_PARTIAL.test(studio)) return "Yes";
   if (!studio || /TBC|Production company TBC|Unknown/i.test(studio)) return "Unknown";
   return "No";
 }
 
-// ---- 4) Music style profile (music usage intelligence) --------------------
-// Best-guess based on genre + format. Real backend will replace this with
-// audio-fingerprint-driven style profiling per show.
 function computeMusicStyle(it) {
   const t = (it.title || "").toLowerCase();
   const d = (it.detail || "").toLowerCase();
@@ -750,7 +708,6 @@ function computeMusicStyle(it) {
     if (/murder|catfish|crime|investigation|killer|gilgo/.test(t)) return "Tense ambient, dramatic strings";
     return "Pop, contemporary";
   }
-  // scripted defaults by tone hints
   if (/comedy|mockumentary|sitcom/.test(d)) return "Indie pop, quirky cues";
   if (/medical|drama|thriller|spy|crime/.test(d)) return "Cinematic orchestral, ambient";
   if (/fantasy|sci-fi|horror|alien|vampire|wizard|harry potter|witch/.test(t + d)) return "Epic orchestral, choral";
@@ -759,39 +716,26 @@ function computeMusicStyle(it) {
   return "Cinematic orchestral";
 }
 
-// ---- 5) Composite priority score (0–100) ----------------------------------
 function computePriority(it) {
   let score = 0;
-  // Royalty Potential (was PRO Tier)
   if (it._royalty === "High") score += 30;
   else if (it._royalty === "Medium") score += 20;
   else score += 10;
-  // Rerun Probability (was Rerun)
   if (it._rerunProb === "High") score += 25;
   else if (it._rerunProb === "Medium") score += 15;
   else score += 5;
-  // Production status momentum
   if (it.status === "renew") score += 20;
   else if (it.status === "inprod") score += 18;
   else if (it.status === "pickup") score += 15;
   else if (it.status === "wrapped") score += 10;
   else if (it.status === "cancel") score += 5;
-  // Covered Under License — covered productions are highest-leverage outreach targets
   if (it._covered === "Yes") score += 15;
   else if (it._covered === "Unknown") score += 2;
-  // (No coverage = no bonus.)
-  // Music intelligence — bonus if we have a style read
   if (it._musicStyle && it._musicStyle !== "Cinematic orchestral") score += 5;
   return Math.min(100, score);
 }
-function priorityTier(score) {
-  if (score >= 70) return "high";
-  if (score >= 50) return "med";
-  return "low";
-}
+function priorityTier(score) { if (score >= 70) return "high"; if (score >= 50) return "med"; return "low"; }
 
-// Decorate every item with backend signals (pulling from Channels & Agreements
-// dashboards via localStorage, falling back to regex heuristics for the rest).
 function recomputeAllSignals() {
   items.forEach(it => {
     it._royalty = computeRoyaltyPotential(it);
@@ -804,7 +748,6 @@ function recomputeAllSignals() {
 }
 recomputeAllSignals();
 
-// When the user edits Channels or Agreements in another tab, refresh.
 window.addEventListener("storage", (e) => {
   if (e.key === "slate-channels-v1" || e.key === "slate-agreements-v1") {
     recomputeAllSignals();
@@ -814,7 +757,6 @@ window.addEventListener("storage", (e) => {
     updateBannerCounts();
   }
 });
-// And when they come back to this tab after editing.
 window.addEventListener("focus", () => {
   recomputeAllSignals();
   const sb = document.getElementById("sortBy");
@@ -832,20 +774,15 @@ function updateBannerCounts() {
 }
 
 function sortItems(by) {
-  if (by === "priority") {
-    items.sort((a,b) => (b._priority - a._priority) || a.title.localeCompare(b.title));
-  } else if (by === "title") {
-    items.sort((a,b) => a.title.localeCompare(b.title));
-  } else if (by === "dateAdded") {
-    items.sort((a,b) => (b.dateAdded || "").localeCompare(a.dateAdded || "") || a.title.localeCompare(b.title));
-  } else {
-    items.sort((a,b) => {
-      const so = order[a.status] - order[b.status];
-      if (so !== 0) return so;
-      if (a.dateAdded !== b.dateAdded) return (b.dateAdded || "").localeCompare(a.dateAdded || "");
-      return a.title.localeCompare(b.title);
-    });
-  }
+  if (by === "priority") items.sort((a,b) => (b._priority - a._priority) || a.title.localeCompare(b.title));
+  else if (by === "title") items.sort((a,b) => a.title.localeCompare(b.title));
+  else if (by === "dateAdded") items.sort((a,b) => (b.dateAdded || "").localeCompare(a.dateAdded || "") || a.title.localeCompare(b.title));
+  else items.sort((a,b) => {
+    const so = order[a.status] - order[b.status];
+    if (so !== 0) return so;
+    if (a.dateAdded !== b.dateAdded) return (b.dateAdded || "").localeCompare(a.dateAdded || "");
+    return a.title.localeCompare(b.title);
+  });
 }
 sortItems("priority");
 
@@ -853,23 +790,15 @@ const LAST_REFRESHED = "2026-05-07";
 const TODAY = new Date().toISOString().slice(0,10);
 const NEW_DAYS = 14;
 
-// ---- localStorage helpers (favorites / archive / edits) ----
 const LS_KEY = "tv-tracker-state-v1";
-function loadState() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}"); }
-  catch(e) { return {}; }
-}
-function saveState(s) {
-  try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch(e) {}
-}
+function loadState() { try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch(e) { return {}; } }
+function saveState(s) { try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch(e) {} }
 let state = loadState();
 state.favs = state.favs || {};
 state.archived = state.archived || {};
 state.edits = state.edits || {};
-state.added = state.added || []; // user-added shows persisted across reloads
+state.added = state.added || [];
 
-// Splice any user-added shows into the items array at startup so they participate
-// in the normal filter/sort/render pipeline.
 if (state.added.length) {
   state.added.forEach(a => {
     if (!items.find(it => itemKeyOf(it) === itemKeyOf(a))) items.unshift({ ...a, _userAdded: true });
@@ -878,83 +807,25 @@ if (state.added.length) {
 function itemKeyOf(it) { return (it.title || "").toLowerCase().trim() + "|" + (it.source || ""); }
 function persistAdded() {
   state.added = items.filter(it => it._userAdded).map(it => {
-    // Strip the runtime-only signal fields before saving
     const { _userAdded, _royalty, _rerunProb, _covered, _musicStyle, _priority, _tier, _royaltySource, _rerunSource, _licenseSource, _licenseEntity, ...rest } = it;
     return { ...rest, _userAdded: true };
   });
   saveState(state);
 }
 
-function itemKey(it) {
-  // Stable identifier for matching across refreshes
-  return (it.title || "").toLowerCase().trim() + "|" + (it.source || "");
-}
-function applyOverlay(it) {
-  // Merge user edits on top of base item
-  const k = itemKey(it);
-  if (state.edits[k]) return Object.assign({}, it, state.edits[k]);
-  return it;
-}
+function itemKey(it) { return (it.title || "").toLowerCase().trim() + "|" + (it.source || ""); }
+function applyOverlay(it) { const k = itemKey(it); if (state.edits[k]) return Object.assign({}, it, state.edits[k]); return it; }
 function isFav(it) { return !!state.favs[itemKey(it)]; }
 function isArchived(it) { return !!state.archived[itemKey(it)]; }
 function isEdited(it) { return !!state.edits[itemKey(it)]; }
-function toggleFav(it) {
-  const k = itemKey(it);
-  if (state.favs[k]) delete state.favs[k]; else state.favs[k] = true;
-  saveState(state); render();
-}
-function toggleArchive(it) {
-  const k = itemKey(it);
-  if (state.archived[k]) delete state.archived[k]; else state.archived[k] = true;
-  saveState(state); render();
-}
-function saveEdit(it, fields) {
-  const k = itemKey(it);
-  state.edits[k] = fields;
-  saveState(state); render();
-}
-function revertEdit(it) {
-  const k = itemKey(it);
-  delete state.edits[k];
-  saveState(state); render();
-}
+function toggleFav(it) { const k = itemKey(it); if (state.favs[k]) delete state.favs[k]; else state.favs[k] = true; saveState(state); render(); }
+function toggleArchive(it) { const k = itemKey(it); if (state.archived[k]) delete state.archived[k]; else state.archived[k] = true; saveState(state); render(); }
+function saveEdit(it, fields) { const k = itemKey(it); state.edits[k] = fields; saveState(state); render(); }
+function revertEdit(it) { const k = itemKey(it); delete state.edits[k]; saveState(state); render(); }
 
-// ---- Refreshed banner (prototype: banner removed; helpers kept for safety) ----
-function ageString(d) {
-  const days = Math.max(0, Math.round((new Date(TODAY) - new Date(d)) / 86400000));
-  if (days === 0) return "today";
-  if (days === 1) return "1 day ago";
-  return days + " days ago";
-}
-function nextBiweeklyMonday(from) {
-  const d = new Date(from + "T07:00:00");
-  d.setDate(d.getDate() + 14);
-  while (d.getDay() !== 1) d.setDate(d.getDate() + 1);
-  return d.toDateString().replace(/^([A-Za-z]+) ([A-Za-z]+) (\d+) (\d+)$/, "$1 $2 $3, $4");
-}
-// The old refresh banner was replaced by the prototype's data-sources banner,
-// so guard the writes in case the page still has the old element IDs.
-const _lr = document.getElementById("lastRefreshed");
-if (_lr) _lr.textContent = LAST_REFRESHED;
-const _ra = document.getElementById("refreshAge");
-if (_ra) _ra.textContent = "(" + ageString(LAST_REFRESHED) + ")";
-const _nr = document.getElementById("nextRun");
-if (_nr) _nr.textContent = nextBiweeklyMonday(LAST_REFRESHED);
+function daysBetween(a, b) { return Math.round((new Date(b + "T00:00:00Z") - new Date(a + "T00:00:00Z")) / 86400000); }
+function isNew(it) { if (!it.dateAdded) return false; return it.dateAdded === LAST_REFRESHED; }
 
-function daysBetween(a, b) {
-  const da = new Date(a + "T00:00:00Z");
-  const db = new Date(b + "T00:00:00Z");
-  return Math.round((db - da) / 86400000);
-}
-function isNew(it) {
-  // Only items added in the most recent refresh are tagged "New".
-  // Older items lose their New tag as soon as a new refresh runs,
-  // even if they were added within the last 14 days.
-  if (!it.dateAdded) return false;
-  return it.dateAdded === LAST_REFRESHED;
-}
-
-// Ensure every item has at least one source link (synthesize a Google search if missing)
 items.forEach(it => {
   if (!it.sources || !it.sources.length) {
     const q = encodeURIComponent(it.title + " " + it.network + " " + it.studio);
@@ -969,7 +840,6 @@ items.forEach(it => {
   }
 });
 
-// Build dropdown of unique dateAdded values (update runs)
 const allDates = Array.from(new Set(items.map(i => i.dateAdded).filter(Boolean))).sort().reverse();
 const dateSelect = document.getElementById("dateSelect");
 allDates.forEach(d => {
@@ -991,10 +861,9 @@ const filters = { status: "all", type: "all", genre: "all", source: "all", dateR
 function render() {
   const term = filters.q.trim().toLowerCase();
   const visible = items.map(applyOverlay).filter(it => {
-    // View filter (favs/archived) takes priority
     if (filters.view === "favs" && !isFav(it)) return false;
     if (filters.view === "archived" && !isArchived(it)) return false;
-    if (filters.view === "all" && isArchived(it)) return false; // hide archived from default view
+    if (filters.view === "all" && isArchived(it)) return false;
     if (filters.status !== "all" && it.status !== filters.status) return false;
     if (filters.type !== "all" && it.type !== filters.type) return false;
     if (filters.genre !== "all" && it.genre !== filters.genre) return false;
@@ -1027,7 +896,7 @@ function render() {
     yes + " covered by license, " + no + " not covered · " +
     (counts.renew||0) + " renewed · " + (counts.inprod||0) + " in production · " + (counts.wrapped||0) + " wrapped";
   if (!visible.length) { list.innerHTML = '<div class="empty">No shows match these filters.</div>'; return; }
-  list.innerHTML = visible.map((it, idx) => {
+  list.innerHTML = visible.map((it) => {
     const isNewItem = isNew(it);
     const fav = isFav(it);
     const archived = isArchived(it);
@@ -1042,7 +911,7 @@ function render() {
     <div class="row proto${isNewItem ? ' is-new' : ''}${fav ? ' is-fav' : ''}${archived ? ' is-archived' : ''}${edited ? ' is-edited' : ''}" data-key="${esc(k)}">
       <div class="badge-stack">
         <span class="badge b-${it.status}">${esc(it.statusLabel)}</span>
-        <span class="priority p-${it._tier}" title="Mocked priority score combining PRO tier, rerun intensity, status momentum, license coverage, and music intel">${it._tier.toUpperCase()} <span class="score">· ${it._priority}</span></span>
+        <span class="priority p-${it._tier}" title="Mocked priority score combining royalty potential, rerun probability, status momentum, license coverage, and music intel">${it._tier.toUpperCase()} <span class="score">· ${it._priority}</span></span>
       </div>
       <div>
         <div class="title">${esc(it.title)}${isNewItem ? '<span class="new-tag">New</span>' : ''}</div>
@@ -1103,7 +972,6 @@ function render() {
       </div>
     </div>
   `;}).join("");
-  // Wire row action buttons
   list.querySelectorAll("[data-action]").forEach(el => {
     el.addEventListener("click", e => {
       const action = el.dataset.action;
@@ -1127,7 +995,6 @@ function render() {
         const fields = {};
         form.querySelectorAll("[data-field]").forEach(inp => { fields[inp.dataset.field] = inp.value; });
         if (baseItem._userAdded) {
-          // For manually-added shows, mutate the item itself and persist.
           Object.assign(baseItem, fields);
           persistAdded();
           recomputeAllSignals();
@@ -1135,7 +1002,6 @@ function render() {
           render();
         } else {
           saveEdit(baseItem, fields);
-          // Re-derive signals since network/studio may have changed.
           recomputeAllSignals();
           render();
         }
@@ -1167,23 +1033,21 @@ function render() {
 
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]); }
 
-document.querySelectorAll(".chip").forEach(chip => {
-  chip.addEventListener("click", () => {
-    const f = chip.dataset.filter;
-    document.querySelectorAll('.chip[data-filter="' + f + '"]').forEach(c => c.classList.remove("active"));
-    chip.classList.add("active");
-    filters[f] = chip.dataset.value;
-    if (f === "dateRange") {
-      // Toggle the secondary controls based on which dateRange chip is active
-      if (chip.dataset.value === "byDate") {
-        dateSelect.style.display = "inline-block";
-        rangePicker.style.display = "none";
+// Filter dropdown change handlers (replaces chip-based filters)
+document.querySelectorAll('.toolbar select[data-filter]').forEach(sel => {
+  sel.addEventListener('change', e => {
+    const f = e.target.dataset.filter;
+    const val = e.target.value;
+    filters[f] = val;
+    if (f === 'dateRange') {
+      if (val === 'byDate') {
+        dateSelect.style.display = 'inline-block';
+        rangePicker.style.display = 'none';
         if (!filters.selectedDate && allDates.length) { filters.selectedDate = allDates[0]; dateSelect.value = allDates[0]; }
-      } else if (chip.dataset.value === "range") {
-        dateSelect.style.display = "none";
-        rangePicker.style.display = "inline-flex";
+      } else if (val === 'range') {
+        dateSelect.style.display = 'none';
+        rangePicker.style.display = 'inline-flex';
         filters.selectedDate = null;
-        // Default the range picker to the full span of dateAdded values on first open
         if (!filters.dateFrom && !filters.dateTo && allDates.length) {
           const sorted = allDates.slice().sort();
           filters.dateFrom = sorted[0];
@@ -1192,14 +1056,15 @@ document.querySelectorAll(".chip").forEach(chip => {
           dateToInput.value = filters.dateTo;
         }
       } else {
-        dateSelect.style.display = "none";
-        rangePicker.style.display = "none";
+        dateSelect.style.display = 'none';
+        rangePicker.style.display = 'none';
         filters.selectedDate = null;
       }
     }
     render();
   });
 });
+
 dateSelect.addEventListener("change", e => { filters.selectedDate = e.target.value; render(); });
 dateFromInput.addEventListener("change", e => { filters.dateFrom = e.target.value || null; render(); });
 dateToInput.addEventListener("change", e => { filters.dateTo = e.target.value || null; render(); });
@@ -1210,32 +1075,20 @@ document.getElementById("rangeClear").addEventListener("click", () => {
 });
 q.addEventListener("input", e => { filters.q = e.target.value; render(); });
 
-// Sort dropdown
-document.getElementById("sortBy").addEventListener("change", e => {
-  sortItems(e.target.value);
-  render();
-});
+document.getElementById("sortBy").addEventListener("change", e => { sortItems(e.target.value); render(); });
 
-// Data-source pills — click for an explanation of what's mocked and where the real feed will plug in
+// Data source pill: musicusage opens an explanation alert; tab-link pills switch tabs
 document.querySelectorAll(".proto-banner .src-pill").forEach(pill => {
   pill.addEventListener("click", () => {
+    if (pill.dataset.tabLink) { switchTab(pill.dataset.tabLink); return; }
     const src = pill.dataset.src;
-    const messages = {
-      sisense: "Sisense — PRO payouts & rerun heatmaps\n\nReal integration plan:\n• Pull channel-level PRO performance royalty rates and rerun frequency from the existing Sisense dashboards\n• Map each production's network → Tier A/B/C and a numeric rerun index\n• Replace computeProTier() and computeRerunIndex() in the script with the live MCP call\n\nCurrently mocked: networks are bucketed by hardcoded regex.",
-      licenses: "License DB — broadcaster & 3rd-party coverage\n\nReal integration plan:\n• Look up each production's studio/prod co against the annual broadcaster master agreements\n• Surface which agreement applies, when it renews, and whether 3rd-party prod cos are covered as nested parties\n• 'Reach out to editor' button will pre-fill the right contact + license terms\n\nCurrently mocked: covered/partial/none is derived from a studio-name regex.",
-      musicusage: "Music Usage Intelligence\n\nReal integration plan:\n• Ingest audio fingerprint / cue-sheet data for each show — especially shows we're NOT currently placed on\n• Build a per-show music style profile (genres, tempo ranges, vocal/instrumental mix, reference artists)\n• Suggest catalog matches when drafting outreach\n\nCurrently mocked: style profile is best-guess from title + detail keywords."
-    };
-    alert(messages[src] || "Source detail not configured.");
+    if (src === "musicusage") {
+      alert("Music Usage Intelligence\n\nReal integration plan:\n• Ingest audio fingerprint / cue-sheet data for each show — especially shows we're NOT currently placed on\n• Build a per-show music style profile (genres, tempo ranges, vocal/instrumental mix, reference artists)\n• Suggest catalog matches when drafting outreach\n\nCurrently mocked: style profile is best-guess from title + detail keywords.");
+    }
   });
 });
 
-// ---- CSV export (exports the currently visible items) ----
-function csvCell(v) {
-  if (v == null) return "";
-  const s = String(v);
-  if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
-  return s;
-}
+function csvCell(v) { if (v == null) return ""; const s = String(v); if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"'; return s; }
 function exportCsv() {
   const term = filters.q.trim().toLowerCase();
   const rows = items.map(applyOverlay).filter(it => {
@@ -1268,56 +1121,27 @@ function exportCsv() {
   const lines = [headers.map(csvCell).join(",")];
   rows.forEach(it => {
     const urls = (it.sources || []).map(s => s[1]).join(" | ");
-    lines.push([
-      it.title, it._tier, it._priority, it._royalty, it._rerunProb, it._covered, it._musicStyle,
-      it.status, it.statusLabel, it.network, it.type, it.genre || "",
-      it.studio, it.source, it.dateAdded || "", it.detail, it.prod || "",
-      isFav(it) ? "yes" : "", isArchived(it) ? "yes" : "", isEdited(it) ? "yes" : "",
-      it._userAdded ? "yes" : "",
-      urls
-    ].map(csvCell).join(","));
+    lines.push([it.title, it._tier, it._priority, it._royalty, it._rerunProb, it._covered, it._musicStyle, it.status, it.statusLabel, it.network, it.type, it.genre || "", it.studio, it.source, it.dateAdded || "", it.detail, it.prod || "", isFav(it) ? "yes" : "", isArchived(it) ? "yes" : "", isEdited(it) ? "yes" : "", it._userAdded ? "yes" : "", urls].map(csvCell).join(","));
   });
   const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
-  a.download = "tv-tracker-export-" + TODAY + ".csv";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  a.href = url; a.download = "tv-tracker-export-" + TODAY + ".csv";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 document.getElementById("exportCsv").addEventListener("click", exportCsv);
 
 document.getElementById("addShow").addEventListener("click", () => {
   const today = new Date().toISOString().slice(0,10);
-  // Make a unique title so itemKey doesn't collide with existing rows
-  let n = 1;
-  let title = "New show";
-  while (items.find(it => (it.title||"").toLowerCase() === title.toLowerCase())) {
-    n += 1; title = "New show " + n;
-  }
-  const newItem = {
-    source: "trade",
-    title,
-    genre: "scripted",
-    network: "",
-    type: "streaming",
-    studio: "",
-    status: "inprod",
-    statusLabel: "In Production",
-    detail: "",
-    prod: "",
-    sources: [],
-    dateAdded: today,
-    _userAdded: true
-  };
+  let n = 1; let title = "New show";
+  while (items.find(it => (it.title||"").toLowerCase() === title.toLowerCase())) { n += 1; title = "New show " + n; }
+  const newItem = { source: "trade", title, genre: "scripted", network: "", type: "streaming", studio: "", status: "inprod", statusLabel: "In Production", detail: "", prod: "", sources: [], dateAdded: today, _userAdded: true };
   items.unshift(newItem);
   persistAdded();
   recomputeAllSignals();
   const sb = document.getElementById("sortBy"); if (sb) sortItems(sb.value);
   render();
-  // Auto-open the edit form for the new entry
   const k = itemKeyOf(newItem);
   const form = list.querySelector('[data-form="' + CSS.escape(k) + '"]');
   if (form) {
@@ -1331,31 +1155,21 @@ document.getElementById("addShow").addEventListener("click", () => {
 render();
 updateBannerCounts();
 
-// ============================================================================
-// Tab switching (in-page sections so it works inside Cowork's sandboxed iframe)
-// ============================================================================
 function switchTab(name) {
   const valid = ["slate", "channels", "agreements"];
   if (!valid.includes(name)) name = "slate";
   document.querySelectorAll(".tab-section").forEach(s => s.classList.toggle("active", s.id === "tab-" + name));
   document.querySelectorAll(".proto-tabs a").forEach(a => a.classList.toggle("active", a.dataset.tab === name));
   try { history.replaceState(null, "", "#" + name); } catch(e) {}
-  // Lazy-render the dashboards on first switch
   if (name === "channels") renderChannels();
   if (name === "agreements") renderAgreements();
 }
 document.querySelectorAll(".proto-tabs a").forEach(a => {
-  a.addEventListener("click", e => {
-    e.preventDefault();
-    switchTab(a.dataset.tab);
-  });
+  a.addEventListener("click", e => { e.preventDefault(); switchTab(a.dataset.tab); });
 });
 window.addEventListener("hashchange", () => switchTab((location.hash || "").replace("#","")));
 switchTab((location.hash || "").replace("#","") || "slate");
 
-// ============================================================================
-// Channels dashboard (inlined)
-// ============================================================================
 const CH_LS_KEY = "slate-channels-v1";
 const CH_DEFAULTS = [
   { name: "HBO / Max",           type: "streaming", royaltyPotential: "High",   proPayout: 92, rerunProbability: "Low",    notes: "Premium streamer — high payouts, low rerun economy." },
@@ -1398,26 +1212,13 @@ const CH_LEVELS = ["High", "Medium", "Low"];
 function chMigrate(arr) {
   let changed = false;
   arr.forEach(c => {
-    if (c.proTier && !c.royaltyPotential) {
-      c.royaltyPotential = c.proTier === "A" ? "High" : c.proTier === "B" ? "Medium" : "Low";
-      delete c.proTier; changed = true;
-    }
-    if (c.rerunIndex && !c.rerunProbability) {
-      c.rerunProbability = c.rerunIndex === "high" ? "High" : c.rerunIndex === "med" ? "Medium" : "Low";
-      delete c.rerunIndex; changed = true;
-    }
+    if (c.proTier && !c.royaltyPotential) { c.royaltyPotential = c.proTier === "A" ? "High" : c.proTier === "B" ? "Medium" : "Low"; delete c.proTier; changed = true; }
+    if (c.rerunIndex && !c.rerunProbability) { c.rerunProbability = c.rerunIndex === "high" ? "High" : c.rerunIndex === "med" ? "Medium" : "Low"; delete c.rerunIndex; changed = true; }
   });
   return changed;
 }
 function chLoad() {
-  try {
-    const stored = localStorage.getItem(CH_LS_KEY);
-    if (stored) {
-      const arr = JSON.parse(stored);
-      if (chMigrate(arr)) chSave(arr);
-      return arr;
-    }
-  } catch(e) {}
+  try { const stored = localStorage.getItem(CH_LS_KEY); if (stored) { const arr = JSON.parse(stored); if (chMigrate(arr)) chSave(arr); return arr; } } catch(e) {}
   return CH_DEFAULTS.slice();
 }
 function chSave(arr) { try { localStorage.setItem(CH_LS_KEY, JSON.stringify(arr)); } catch(e) {} }
@@ -1443,17 +1244,13 @@ function renderChannels() {
   }).join("");
   tbody.querySelectorAll("input, select").forEach(el => {
     el.addEventListener("change", e => {
-      const tr = e.target.closest("tr");
-      const idx = parseInt(tr.dataset.idx);
-      const field = e.target.dataset.field;
-      let val = e.target.value;
+      const tr = e.target.closest("tr"); const idx = parseInt(tr.dataset.idx);
+      const field = e.target.dataset.field; let val = e.target.value;
       if (field === "proPayout") val = Math.max(0, Math.min(100, parseInt(val) || 0));
       channels[idx][field] = val;
       if (field === "royaltyPotential") e.target.className = "pot-" + val;
       if (field === "rerunProbability") e.target.className = "prob-" + val;
-      chSave(channels);
-      chUpdateStats();
-      // Recompute slate signals so the priority score reflects the new channel data
+      chSave(channels); chUpdateStats();
       recomputeAllSignals();
       const sb = document.getElementById("sortBy"); if (sb) sortItems(sb.value);
       if (typeof render === "function") render();
@@ -1464,12 +1261,8 @@ function renderChannels() {
     el.addEventListener("click", () => {
       const idx = parseInt(el.dataset.idx);
       if (confirm(`Delete "${channels[idx].name}"?`)) {
-        channels.splice(idx, 1);
-        chSave(channels);
-        renderChannels();
-        recomputeAllSignals();
-        if (typeof render === "function") render();
-        updateBannerCounts();
+        channels.splice(idx, 1); chSave(channels); renderChannels();
+        recomputeAllSignals(); if (typeof render === "function") render(); updateBannerCounts();
       }
     });
   });
@@ -1490,17 +1283,12 @@ function chUpdateStats() {
 }
 document.getElementById("ch-addRow").addEventListener("click", () => {
   channels.unshift({ name: "New channel", type: "cable", royaltyPotential: "Medium", proPayout: 50, rerunProbability: "Medium", notes: "" });
-  chSave(channels);
-  renderChannels();
+  chSave(channels); renderChannels();
 });
 document.getElementById("ch-resetData").addEventListener("click", () => {
   if (confirm("Reset all channels to the seed defaults? Your edits will be lost.")) {
-    channels = CH_DEFAULTS.slice();
-    chSave(channels);
-    renderChannels();
-    recomputeAllSignals();
-    if (typeof render === "function") render();
-    updateBannerCounts();
+    channels = CH_DEFAULTS.slice(); chSave(channels); renderChannels();
+    recomputeAllSignals(); if (typeof render === "function") render(); updateBannerCounts();
   }
 });
 document.getElementById("ch-q").addEventListener("input", e => { chSearch = e.target.value; renderChannels(); });
@@ -1516,9 +1304,6 @@ document.getElementById("ch-exportCsv").addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 
-// ============================================================================
-// Agreements dashboard (inlined)
-// ============================================================================
 const AG_LS_KEY = "slate-agreements-v1";
 const AG_DEFAULTS = [
   { entity: "Warner Bros. Discovery",      entityType: "broadcaster",        scope: "Yes", agreementType: "master",    renewalDate: "2027-03-31", status: "active",      notes: "HBO/Max + WB TV scripted/unscripted + owned prod cos." },
@@ -1558,14 +1343,7 @@ function agMigrate(arr) {
   return changed;
 }
 function agLoad() {
-  try {
-    const stored = localStorage.getItem(AG_LS_KEY);
-    if (stored) {
-      const arr = JSON.parse(stored);
-      if (agMigrate(arr)) agSave(arr);
-      return arr;
-    }
-  } catch(e) {}
+  try { const stored = localStorage.getItem(AG_LS_KEY); if (stored) { const arr = JSON.parse(stored); if (agMigrate(arr)) agSave(arr); return arr; } } catch(e) {}
   return AG_DEFAULTS.slice();
 }
 function agSave(arr) { try { localStorage.setItem(AG_LS_KEY, JSON.stringify(arr)); } catch(e) {} }
@@ -1592,14 +1370,12 @@ function renderAgreements() {
   }).join("");
   tbody.querySelectorAll("input, select").forEach(el => {
     el.addEventListener("change", e => {
-      const tr = e.target.closest("tr");
-      const idx = parseInt(tr.dataset.idx);
+      const tr = e.target.closest("tr"); const idx = parseInt(tr.dataset.idx);
       const field = e.target.dataset.field;
       agreements[idx][field] = e.target.value;
       if (field === "scope") e.target.className = "scope-" + e.target.value;
       if (field === "status") e.target.className = "status-" + e.target.value;
-      agSave(agreements);
-      agUpdateStats();
+      agSave(agreements); agUpdateStats();
       recomputeAllSignals();
       const sb = document.getElementById("sortBy"); if (sb) sortItems(sb.value);
       if (typeof render === "function") render();
@@ -1610,12 +1386,8 @@ function renderAgreements() {
     el.addEventListener("click", () => {
       const idx = parseInt(el.dataset.idx);
       if (confirm(`Delete "${agreements[idx].entity}"?`)) {
-        agreements.splice(idx, 1);
-        agSave(agreements);
-        renderAgreements();
-        recomputeAllSignals();
-        if (typeof render === "function") render();
-        updateBannerCounts();
+        agreements.splice(idx, 1); agSave(agreements); renderAgreements();
+        recomputeAllSignals(); if (typeof render === "function") render(); updateBannerCounts();
       }
     });
   });
@@ -1634,17 +1406,12 @@ function agUpdateStats() {
 }
 document.getElementById("ag-addRow").addEventListener("click", () => {
   agreements.unshift({ entity: "New entity", entityType: "production company", scope: "Yes", agreementType: "framework", renewalDate: "", status: "active", notes: "" });
-  agSave(agreements);
-  renderAgreements();
+  agSave(agreements); renderAgreements();
 });
 document.getElementById("ag-resetData").addEventListener("click", () => {
   if (confirm("Reset all agreements to the seed defaults? Your edits will be lost.")) {
-    agreements = AG_DEFAULTS.slice();
-    agSave(agreements);
-    renderAgreements();
-    recomputeAllSignals();
-    if (typeof render === "function") render();
-    updateBannerCounts();
+    agreements = AG_DEFAULTS.slice(); agSave(agreements); renderAgreements();
+    recomputeAllSignals(); if (typeof render === "function") render(); updateBannerCounts();
   }
 });
 document.getElementById("ag-q").addEventListener("input", e => { agSearch = e.target.value; renderAgreements(); });
